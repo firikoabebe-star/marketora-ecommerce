@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test ETB Currency Format</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-box {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0ea5e9;
+            margin: 10px 0;
+        }
+        .old-price {
+            text-decoration: line-through;
+            color: #999;
+        }
+        .success {
+            color: #10b981;
+            font-weight: bold;
+        }
+        .info {
+            background: #e0f2fe;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-box">
+        <h1>🇪🇹 Ethiopian Birr (ETB) Currency Test</h1>
+        
+        <h2>Test Prices:</h2>
+        
+        <div>
+            <strong>Air Max 270:</strong>
+            <div class="price" id="price1">Loading...</div>
+            <div class="old-price">Old: $150.00</div>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <strong>React Infinity Run:</strong>
+            <div class="price" id="price2">Loading...</div>
+            <div class="old-price">Old: $160.00</div>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <strong>Sportswear Hoodie:</strong>
+            <div class="price" id="price3">Loading...</div>
+            <div class="old-price">Old: $65.00</div>
+        </div>
+        
+        <div class="info">
+            <h3>✅ What You Should See:</h3>
+            <ul>
+                <li>Prices formatted as <strong>ETB 18,500.00</strong></li>
+                <li>Currency symbol: <strong>ETB</strong></li>
+                <li>Comma separators for thousands</li>
+                <li>Two decimal places</li>
+            </ul>
+            
+            <h3>❌ If You See USD ($):</h3>
+            <ul>
+                <li>Clear your browser cache (Ctrl + Shift + Delete)</li>
+                <li>Hard refresh (Ctrl + F5)</li>
+                <li>Try incognito/private browsing mode</li>
+                <li>Restart the frontend server</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // This is the same formatPrice function from utils.ts
+        function formatPrice(price) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'ETB',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            }).format(price);
+        }
+
+        // Test the prices
+        document.getElementById('price1').textContent = formatPrice(18500);
+        document.getElementById('price2').textContent = formatPrice(19800);
+        document.getElementById('price3').textContent = formatPrice(8000);
+
+        // Check if ETB is showing
+        const testPrice = formatPrice(18500);
+        if (testPrice.includes('ETB')) {
+            console.log('✅ SUCCESS: ETB currency is working!');
+            console.log('Test price:', testPrice);
+        } else {
+            console.log('❌ ERROR: Currency not showing as ETB');
+            console.log('Test price:', testPrice);
+        }
+    </script>
+</body>
+</html>
