@@ -1,13 +1,72 @@
+# Dependencies
 node_modules/
+.pnp/
+.pnp.js
+.yarn/install-state.gz
+
+# Next.js
 .next/
-dist/
+out/
 build/
+dist/
+.next/
+.next/
+*.tsbuildinfo
+next-env.d.ts
+
+# Testing
+coverage/
+.nyc_output/
+
+# Logs
 logs/
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
 .env
 .env.local
 .env.*.local
+
+# Editor directories
+.vscode/*
+!.vscode/extensions.json
+.idea/
 .DS_Store
-coverage/
-*.tsbuildinfo
-next-env.d.ts
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Kiro-generated documentation files (not needed in production)
+API.md
+ARCHITECTURE.md
+DEPLOYMENT.md
+FEATURES.md
+FINAL_INSTRUCTIONS.md
+OVERVIEW.md
+PROJECT_SUMMARY.md
+QUICKSTART.md
+SEE_ETB_CHANGES.md
+SETUP_COMPLETE.md
+START_HERE.md
+START_SERVERS.md
+TESTING.md
+CHANGES_SUMMARY.md
+CURRENCY_UPDATE.md
+
+# Setup scripts (optional, comment out if you want to keep them)
+setup.ps1
+setup.sh
+
+# Docker files (uncomment if you want to ignore these)
+# docker-compose.yml
+
+# License file (usually you want to keep this)
+# LICENSE
+
+# README (usually you want to keep this)
+# README.md
