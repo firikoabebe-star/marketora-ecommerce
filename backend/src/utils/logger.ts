@@ -1,7 +1,9 @@
 import winston from 'winston';
 
+const isProduction = process.env.NODE_ENV === 'production' || !!process.env.VERCEL || !!process.env.LAMBDA_TASK_ROOT;
+
 const logger = winston.createLogger({
-  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+  level: isProduction ? 'info' : 'debug',
   format: winston.format.combine(
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
     winston.format.errors({ stack: true }),
@@ -10,20 +12,21 @@ const logger = winston.createLogger({
   ),
   defaultMeta: { service: 'ecommerce-api' },
   transports: [
-    ...(process.env.NODE_ENV === 'production' || process.env.VERCEL
-      ? []
-      : [
-          new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
-          new winston.transports.File({ filename: 'logs/combined.log' }),
-        ]),
+    new winston.transports.Console({
+      format: winston.format.combine(
+        winston.format.colorize(),
+        winston.format.simple()
+      ),
+    }),
   ],
 });
 
-if (process.env.NODE_ENV !== 'production') {
+if (!isProduction) {
   logger.add(
-    new winston.transports.Console({
-      format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
-    })
+    new winston.transports.File({ filename: 'logs/error.log', level: 'error' })
+  );
+  logger.add(
+    new winston.transports.File({ filename: 'logs/combined.log' })
   );
 }
 
