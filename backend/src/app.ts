@@ -51,6 +51,16 @@ app.get('/health', (_req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Root route
+app.get('/', (_req, res) => {
+  res.status(200).json({
+    message: 'Ecommerce API is running',
+    version: '1.0.0',
+    documentation: '/api',
+    health: '/health',
+  });
+});
+
 // API routes
 app.use('/api', routes);
 
