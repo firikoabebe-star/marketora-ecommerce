@@ -14,22 +14,19 @@ const app = express();
 app.use(helmet());
 
 // CORS configuration
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://marketora-frontend.vercel.app',
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: (origin, callback) => {
-      const allowedOrigins = [
-        'http://localhost:3000',
-        process.env.FRONTEND_URL,
-      ].filter(Boolean);
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
+    origin: allowedOrigins,
     credentials: true,
   })
 );
+
+app.options('*', cors()); // VERY IMPORTANT for Vercel/Preflight requests
 
 // Rate limiting
 const limiter = rateLimit({
@@ -38,7 +35,7 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again later.',
 });
 
-app.use('/api', limiter);
+app.use('/', limiter);
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
@@ -72,7 +69,7 @@ app.get('/', (_req, res) => {
 });
 
 // API routes
-app.use('/api', routes);
+app.use('/', routes);
 
 // Error handling
 app.use(notFound);
