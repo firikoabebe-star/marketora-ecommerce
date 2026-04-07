@@ -12,8 +12,10 @@ interface User {
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
+  isInitialized: boolean;
   setUser: (user: User | null) => void;
   logout: () => void;
+  setIsInitialized: (isInitialized: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -21,14 +23,21 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       isAuthenticated: false,
+      isInitialized: false,
       setUser: (user) => set({ user, isAuthenticated: !!user }),
       logout: () => {
-        localStorage.removeItem('accessToken');
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('accessToken');
+        }
         set({ user: null, isAuthenticated: false });
       },
+      setIsInitialized: (isInitialized) => set({ isInitialized }),
     }),
     {
       name: 'auth-storage',
+      onRehydrateStorage: () => (state) => {
+        state?.setIsInitialized(true);
+      },
     }
   )
 );

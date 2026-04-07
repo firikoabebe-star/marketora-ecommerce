@@ -5,9 +5,11 @@ import Link from 'next/link';
 import { useAuthStore } from '@/store/authStore';
 import { useCartStore } from '@/store/cartStore';
 import MobileMenu from './MobileMenu';
+import LogoutDialog from './LogoutDialog';
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const { isAuthenticated, user, logout } = useAuthStore();
   const itemCount = useCartStore((state) => state.getItemCount());
 
@@ -40,10 +42,18 @@ export default function Navbar() {
             {isAuthenticated ? (
               <>
                 <span className="hidden text-sm md:inline">Hi, {user?.firstName}</span>
+                {user?.role === 'ADMIN' && (
+                  <Link href="/admin" className="text-sm font-medium text-blue-600 hover:text-blue-500">
+                    Admin Dashboard
+                  </Link>
+                )}
                 <Link href="/orders" className="text-sm font-medium hover:text-gray-600">
                   Orders
                 </Link>
-                <button onClick={logout} className="text-sm font-medium hover:text-gray-600">
+                <button 
+                  onClick={() => setLogoutDialogOpen(true)} 
+                  className="text-sm font-medium hover:text-gray-600"
+                >
                   Logout
                 </button>
               </>
@@ -79,6 +89,11 @@ export default function Navbar() {
       </div>
 
       <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
+      <LogoutDialog 
+        isOpen={logoutDialogOpen} 
+        onClose={() => setLogoutDialogOpen(false)} 
+        onConfirm={logout} 
+      />
     </nav>
   );
 }

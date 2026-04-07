@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore } from '@/store/authStore';
+import LogoutDialog from './LogoutDialog';
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -11,6 +12,7 @@ interface MobileMenuProps {
 }
 
 export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const { isAuthenticated, user, logout } = useAuthStore();
 
   useEffect(() => {
@@ -73,10 +75,18 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                     {isAuthenticated ? (
                       <>
                         <p className="mb-4 text-sm text-gray-600">Hi, {user?.firstName}</p>
+                        {user?.role === 'ADMIN' && (
+                          <Link href="/admin" onClick={onClose} className="block py-2 font-medium text-blue-600 hover:text-blue-500">
+                             Admin Dashboard
+                          </Link>
+                        )}
                         <Link href="/orders" onClick={onClose} className="block py-2 font-medium">
                           My Orders
                         </Link>
-                        <button onClick={() => { logout(); onClose(); }} className="block w-full py-2 text-left font-medium">
+                        <button 
+                          onClick={() => setLogoutDialogOpen(true)} 
+                          className="block w-full py-2 text-left font-medium text-red-600"
+                        >
                           Logout
                         </button>
                       </>
@@ -97,6 +107,14 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           </motion.div>
         </>
       )}
+      <LogoutDialog 
+        isOpen={logoutDialogOpen} 
+        onClose={() => setLogoutDialogOpen(false)} 
+        onConfirm={() => {
+          logout();
+          onClose();
+        }} 
+      />
     </AnimatePresence>
   );
 }
