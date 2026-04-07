@@ -69,7 +69,7 @@ app.get('/', (_req, res) => {
 });
 
 // API routes
-app.use('/', routes);
+app.use('/api', routes);
 
 // Error handling
 app.use(notFound);

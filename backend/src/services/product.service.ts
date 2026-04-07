@@ -138,11 +138,40 @@ export class ProductService {
       categoryId: string;
       images: string[];
       featured: boolean;
+      variants: Array<{ id?: string; size: string; color: string; sku: string; stock: number }>;
     }>
   ) {
+    const { variants, ...productData } = data;
+
     const product = await prisma.product.update({
       where: { id },
-      data,
+      data: {
+        ...productData,
+        ...(variants && {
+          variants: {
+            deleteMany: {
+              id: {
+                notIn: variants.filter((v) => v.id).map((v) => v.id as string),
+              },
+            },
+            upsert: variants.map((v) => ({
+              where: { id: v.id || 'new-id' },
+              create: {
+                size: v.size,
+                color: v.color,
+                sku: v.sku,
+                stock: v.stock,
+              },
+              update: {
+                size: v.size,
+                color: v.color,
+                sku: v.sku,
+                stock: v.stock,
+              },
+            })),
+          },
+        }),
+      },
       include: {
         variants: true,
         category: true,

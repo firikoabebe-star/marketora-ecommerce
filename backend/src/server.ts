@@ -8,12 +8,26 @@ const PORT = process.env.PORT || 5000;
 
 let server: any;
 
-// Only listen if NOT in Vercel or production environment
-if (!process.env.VERCEL && process.env.NODE_ENV !== 'production') {
-  server = app.listen(PORT, () => {
-    logger.info(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-  });
-}
+const startServer = (port: number | string) => {
+  // Only listen if NOT in Vercel or production environment
+  if (!process.env.VERCEL && process.env.NODE_ENV !== 'production') {
+    const currentPort = Number(port);
+    server = app.listen(currentPort, () => {
+      logger.info(`Server running in ${process.env.NODE_ENV} mode on port ${currentPort}`);
+    });
+
+    server.on('error', (e: any) => {
+      if (e.code === 'EADDRINUSE') {
+        logger.warn(`Port ${currentPort} is busy, trying ${currentPort + 1}...`);
+        startServer(currentPort + 1);
+      } else {
+        logger.error('Server error:', e);
+      }
+    });
+  }
+};
+
+startServer(PORT);
 
 export default app;
 
